@@ -1,0 +1,142 @@
+<form action="{{ route('properties.book.pay', $property->id) }}" method="POST">
+    @csrf
+    <div>
+        <label for="name">Name:</label>
+        <input type="text" name="name" id="name" required>
+    </div>
+    <div>
+        <label for="email">Email:</label>
+        <input type="email" name="email" id="email" required>
+    </div>
+    <div>
+        <label for="phone">Phone:</label>
+        <input type="text" name="phone" id="phone" required>
+    </div>
+    <div>
+        <label for="visit_date">Visit Date:</label>
+        <input type="date" name="visit_date" id="visit_date" required>
+    </div>
+    <div>
+        <label for="visit_time">Visit Time:</label>
+        <input type="time" name="visit_time" id="visit_time" required>
+    </div>
+    <div>
+        <label for="message">Message (optional):</label>
+        <textarea name="message" id="message"></textarea>
+    </div>
+    <button type="submit">Submit and Pay</button>
+</form>
+
+<!-------------------------------------------------->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ $property->title }}</title>
+</head>
+<body>
+     <!-- Flash Message -->
+     @if (session('success'))
+        <div style="background-color: #d4edda; color: #155724; padding: 10px; border: 1px solid #c3e6cb; border-radius: 5px; margin-bottom: 15px;">
+            {{ session('success') }}
+        </div>
+    @endif
+<h1>{{ $property->title }}</h1>
+<img src="{{ asset($property->image) }}" alt="{{ $property->title }}" style="width: 400px; height: auto;">
+<p><strong>Description:</strong> {{ $property->description }}</p>
+<p><strong>Price:</strong> ${{ number_format($property->price, 2) }}</p>
+<p><strong>Location:</strong> {{ $property->location }}</p>
+<p><strong>Beds:</strong> {{ $property->beds }}</p>
+<p><strong>Baths:</strong> {{ $property->baths }}</p>
+<p><strong>Type:</strong> {{ ucfirst($property->type) }}</p>
+
+<!-- Back to List Button -->
+<a href="{{ route('properties.index') }}">Back to List</a>
+
+<!-- Book Now Button -->
+<a href="{{ route('properties.book', $property->id) }}">
+    <button style="margin-top: 10px; padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
+        Book Now
+    </button>
+</a>
+
+</body>
+</html>
+
+
+<!--------------------------------------------------------------------------------------------->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Properties</title>
+</head>
+<body>
+@if (session('success'))
+    <div style="color: green; font-weight: bold;">
+        {{ session('success') }}
+    </div>
+@endif
+
+@if (session('error'))
+    <div style="color: red; font-weight: bold;">
+        {{ session('error') }}
+    </div>
+@endif
+
+<form method="GET" action="{{ route('properties.index') }}">
+    <input type="text" name="location" placeholder="Location" value="{{ request('location') }}">
+    <input type="number" name="min_price" placeholder="Min Price" value="{{ request('min_price') }}">
+    <input type="number" name="max_price" placeholder="Max Price" value="{{ request('max_price') }}">
+    
+    <button type="submit">Search</button>
+</form>
+
+
+    <h1>Properties Listing</h1>
+    <ul>
+    @foreach ($properties as $property)
+        <li>
+            <img src="{{ asset($property->image) }}" alt="{{ $property->title }}" style="width: 200px; height: auto;">
+            <h2>{{ $property->title }}</h2>
+            <p>{{ $property->description }}</p>
+            <p><strong>Price:</strong> ${{ number_format($property->price, 2) }}</p>
+            <p><strong>Location:</strong> {{ $property->location }}</p>
+            <p><strong>Beds:</strong> {{ $property->beds }}</p>
+            <p><strong>Baths:</strong> {{ $property->baths }}</p>
+            <a href="{{ route('properties.show', $property->id) }}">
+                <input type="button" value="Details">
+            </a>
+        </li>
+    @endforeach
+</ul>
+
+
+    @if ($properties->isEmpty())
+    <p>No properties found matching your criteria.</p>
+
+@endif
+
+
+</body>
+</html>
+
+
+
+<!-----cooode to shoow alll producct ---->
+@foreach ($properties as $property)
+<li>
+    <img src="{{ asset($property->image) }}" alt="{{ $property->title }}" style="width: 200px; height: auto;">
+    <h2>{{ $property->title }}</h2>
+    <p>{{ $property->description }}</p>
+    <p><strong>Price:</strong> ${{ number_format($property->price, 2) }}</p>
+    <p><strong>Location:</strong> {{ $property->location }}</p>
+    <p><strong>Beds:</strong> {{ $property->beds }}</p>
+    <p><strong>Baths:</strong> {{ $property->baths }}</p>
+    <a href="{{ route('properties.show', $property->id) }}">
+        <input type="button" value="Details">
+    </a>
+</li>
+@endforeach
